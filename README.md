@@ -10,23 +10,17 @@ A simple web interface for OpenAI's Whisper speech-to-text transcription service
 - Language detection
 - Simple and intuitive interface
 
-## Prerequisites
+## Launch Options
 
-Before running this project, make sure you have the following installed:
+### 1. Direct Launch
 
-- Python 3.9 or higher
+#### Prerequisites
+- Python 3.10 or higher
 - FFmpeg
 - Rust
 
-## Installation
-
-1. Clone the repository:
-```bash
-git clone <repository-url>
-cd whisper-web-service
-```
-
-2. Install FFmpeg:
+#### Installation Steps
+1. Install FFmpeg:
 ```bash
 # Ubuntu/Debian
 sudo apt-get update && sudo apt-get install ffmpeg
@@ -38,14 +32,65 @@ brew install ffmpeg
 choco install ffmpeg
 ```
 
-3. Install Rust:
+2. Install Rust:
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
 
-4. Install Python dependencies:
+3. Create and activate virtual environment:
+```bash
+python -m venv venv
+source venv/bin/activate  # Linux/MacOS
+# or
+venv\Scripts\activate     # Windows
+```
+
+4. Install dependencies:
 ```bash
 pip install -r requirements.txt
+```
+
+5. Run the application:
+```bash
+python app.py
+```
+
+### 2. Docker Launch
+
+#### Prerequisites
+- Docker
+
+#### Steps
+1. Build the Docker image:
+```bash
+docker build -t whisper-transcription .
+```
+
+2. Run the container in detached mode:
+```bash
+docker run -d --name whisper-api -p 5500:5500 whisper-transcription
+```
+
+#### Docker Commands Reference
+```bash
+# View logs
+docker logs -f whisper-api
+
+# Stop container
+docker stop whisper-api
+
+# Remove container
+docker rm whisper-api
+
+# Rebuild and restart
+docker rm -f whisper-api && docker build -t whisper-transcription . && docker run -d --name whisper-api -p 5500:5500 whisper-transcription
+```
+
+## Access
+
+After launching (either method), access the web interface at:
+```
+http://localhost:5500
 ```
 
 ## Project Structure
@@ -53,24 +98,11 @@ pip install -r requirements.txt
 whisper-web-service/
 ├── app.py              # Main application file
 ├── requirements.txt    # Python dependencies
+├── Dockerfile         # Docker configuration
 ├── templates/         
 │   └── index.html     # Web interface template
 └── uploads/           # Temporary storage for uploaded files
 ```
-
-## Usage
-
-1. Start the application:
-```bash
-python app.py
-```
-
-2. Open your web browser and navigate to:
-```
-http://localhost:5500
-```
-
-3. Upload an audio file and click "Transcribe" to get the text transcription.
 
 ## Supported Audio Formats
 
@@ -93,38 +125,55 @@ http://localhost:5500
 - Processing time depends on file size and system capabilities
 - Requires active internet connection for initial model download
 
-## Development
-
-To contribute to this project:
-
-1. Fork the repository
-2. Create a new branch for your feature
-3. Make your changes
-4. Submit a pull request
-
 ## Troubleshooting
 
-Common issues and solutions:
+### Direct Launch Issues
+1. **Missing dependencies**:
+   - Verify FFmpeg installation: `ffmpeg -version`
+   - Check Rust installation: `rustc --version`
+   - Verify Python version: `python --version`
 
-1. **FFmpeg not found**
-   - Ensure FFmpeg is properly installed and accessible in your system PATH
+2. **Package installation errors**:
+   - Update pip: `pip install --upgrade pip`
+   - Install packages individually to identify issues
 
-2. **Model download issues**
-   - Check your internet connection
-   - Ensure enough disk space for model storage
+### Docker Issues
+1. **Container not starting**:
+   ```bash
+   docker logs whisper-api
+   ```
 
-3. **File upload errors**
-   - Verify file size is under 16MB
-   - Check file format compatibility
+2. **Cannot connect to web interface**:
+   - Verify container is running: `docker ps`
+   - Check port mapping: `docker port whisper-api`
 
-## Security Notes
+3. **Transcription errors**:
+   - Ensure audio file format is supported
+   - Check file size is under 16MB
+   - Verify container has internet access for model download
 
-- Implements basic file validation
-- Uses secure filename handling
-- Temporary file cleanup after processing
+## License
+MIT License
 
-## Acknowledgments
+Copyright (c) 2024 Maksim Zhirnov
 
-- OpenAI for the Whisper model
-- Flask framework contributors
-- FFmpeg project# whisper-rest-api
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+## Contact
+maximz2009@gmail.com
