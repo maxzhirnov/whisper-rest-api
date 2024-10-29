@@ -86,6 +86,43 @@ docker rm whisper-api
 docker rm -f whisper-api && docker build -t whisper-transcription . && docker run -d --name whisper-api -p 5500:5500 whisper-transcription
 ```
 
+## First Launch Notes
+
+### Important: Initial Model Download
+
+When you first start the application (either through direct launch or Docker), it will automatically download the Whisper model. Please note:
+
+- Model size: approximately 1.5GB
+- Download time: varies depending on your internet connection
+- The web interface will not be accessible until the model download is complete
+
+### How to Monitor First Launch
+
+#### Direct Launch
+- Watch the console output for download progress
+- The server will start accepting connections only after model is loaded
+- You'll see a message like "Running on http://0.0.0.0:5500" when ready
+
+#### Docker Launch
+- Monitor the download progress using Docker logs:
+```bash
+docker logs -f whisper-api
+```
+- The container will appear as running, but the web interface won't be accessible during model download
+- Wait for the log message indicating successful model load and server start
+
+### Expected Timeline
+1. First launch initiated
+2. Model download starts (~1.5GB)
+3. Model loading into memory
+4. Flask server starts
+5. Web interface becomes accessible
+
+### Subsequent Launches
+- After the initial download, the model will be cached
+- Future launches will be much faster
+- Docker image rebuilds will require new model download
+
 ## Access
 
 After launching (either method), access the web interface at:
